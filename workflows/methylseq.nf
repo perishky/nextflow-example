@@ -1,25 +1,25 @@
-include { trimreads } from '../modules/trimreads'
-include { methcounts } from '../modules/methcounts'
-include { methmatrix } from '../modules/methmatrix' 
+include { trim_reads } from '../modules/trim_reads'
+include { meth_counts } from '../modules/meth_counts'
+include { meth_matrix } from '../modules/meth_matrix' 
 
 workflow methylseq {
     
     take:
-    pattern
+    fastqdir
     assembly
     outdir
     
     main:
-    read_pairs_ch = Channel.fromFilePairs(pattern, checkIfExists: true)
-    trimreads(read_pairs_ch, outdir)
-    methcounts(trimreads.out.reads, assembly, outdir)
-    files_ch = methcounts.out.counts
+    read_pairs = Channel.fromFilePairs("${fastqdir}/*-R{1,2}.fastq", checkIfExists: true)
+    trim_reads(read_pairs, outdir)
+    meth_counts(trim_reads.out.reads, assembly, outdir)
+    files_ch = meth_counts.out.counts
 	.map{ it -> it[0] + "," + it[1].toString() }
 	.collectFile(name: "files.csv", newLine: true)
-    methmatrix(files_ch, outdir)
+    meth_matrix(files_ch, outdir)
     
     emit:
-    meth = methmatrix.out.meth
-    total = methmatrix.out.total
+    meth = meth_matrix.out.meth
+    total = meth_matrix.out.total
 }
 

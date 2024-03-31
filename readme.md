@@ -3,12 +3,8 @@
 Aims to demonstrate roughly how a nextflow pipeline
 could be set up for methyl-seq data.
 
-'Download' the data (actually simulates data)
+Perform all steps in the pipeline
 ```
-nextflow run nextflow-example/download.nf
-```
-
-Perform the analyses
-```
-nextflow run nextflow-example/main.nf 
+nextflow run nextflow-example/simulate_dataset.nf
+nextflow run nextflow-example/main.nf [-resume]
 ```

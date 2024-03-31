@@ -2,13 +2,13 @@
 
 /*
  * Toy methyl-seq pipeline
- * nextflow run main.nf -c main.config -resume
  */
 
+include { prepare_genome } from './workflows/prepare_genome'
 include { methylseq } from './workflows/methylseq'
 
 workflow {
-    pattern = "${params.fastqdir}/*R{1,2}.fastq"
-    assembly = "${params.genomedir}/${params.assembly}.fa"
-    methylseq (pattern, assembly, "${params.outdir}") 
+    prepare_genome("${params.fastqdir}", "${params.assembly}", "${params.genomedir}")
+    index = prepare_genome.out
+    methylseq("${params.fastqdir}", index, "${params.outdir}") 
 }
