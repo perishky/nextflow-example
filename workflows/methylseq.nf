@@ -1,6 +1,7 @@
 include { trim_reads } from '../modules/trim_reads'
 include { meth_counts } from '../modules/meth_counts'
 include { meth_matrix } from '../modules/meth_matrix' 
+include { meth_sum } from '../modules/meth_sum'
 
 workflow methylseq {
     
@@ -17,6 +18,7 @@ workflow methylseq {
 	.map{ it -> it[0] + "," + it[1].toString() }
 	.collectFile(name: "files.csv", newLine: true)
     meth_matrix(files_ch, outdir)
+    meth_sum(meth_matrix.out.meth, outdir)
     
     emit:
     meth = meth_matrix.out.meth
